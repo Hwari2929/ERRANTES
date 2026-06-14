@@ -14,6 +14,7 @@ const CONTACT_DAMAGE_INTERVAL := 0.8
 func _ready() -> void:
 	# Player 시그널
 	player.hp_changed.connect(ui.update_hp)
+	player.xp_changed.connect(ui.update_xp)
 	player.died.connect(_on_player_died)
 	player.level_uped.connect(_on_level_up)
 
