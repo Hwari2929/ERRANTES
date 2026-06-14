@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://wave_manager.gd" id="1_wm"]
+
+[node name="WaveManager" type="Node"]
+script = ExtResource("1_wm")
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 1.8
+autostart = false

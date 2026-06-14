@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://player.gd" id="1_player"]
+[ext_resource type="Script" path="res://weapon.gd" id="2_weapon"]
+
+[sub_resource type="RectangleShape2D" id="RectShape_1"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="RectShape_2"]
+size = Vector2(20, 20)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 2
+script = ExtResource("1_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.3, 0.8, 1.0, 1.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectShape_1")
+
+[node name="InvincibilityTimer" type="Timer" parent="."]
+wait_time = 1.0
+one_shot = true
+
+[node name="Weapon" type="Node2D" parent="."]
+script = ExtResource("2_weapon")
+
+[node name="FireTimer" type="Timer" parent="Weapon"]
+wait_time = 0.6
+autostart = true
