@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://wave_manager.tscn" id="3_wave"]
 [ext_resource type="PackedScene" path="res://ui.tscn" id="4_ui"]
+[ext_resource type="Script" path="res://background.gd" id="5_bg"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
+
+[node name="Background" type="Node2D" parent="."]
+script = ExtResource("5_bg")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(640, 360)
@@ -17,3 +21,4 @@ position = Vector2(640, 360)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 360)
+zoom = Vector2(1.5, 1.5)
