@@ -24,7 +24,7 @@ func _ready() -> void:
 	hp_changed.emit(current_hp, max_hp)
 
 func _physics_process(_delta: float) -> void:
-	var dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	velocity = dir * speed
 	move_and_slide()
 
@@ -38,7 +38,7 @@ func take_damage(amount: int) -> void:
 		queue_free()
 		return
 	invincible = true
-	sprite.modulate.a = 0.5
+	sprite.modulate.a = 0.4
 	inv_timer.start()
 
 func add_xp(amount: int) -> void:
@@ -51,11 +51,36 @@ func add_xp(amount: int) -> void:
 func _level_up() -> void:
 	level += 1
 	xp_to_next_level = int(xp_to_next_level * 1.5)
-	max_hp += 10
-	current_hp = max_hp
-	speed += 10.0
 	level_uped.emit(level)
+
+func heal(amount: int) -> void:
+	current_hp = mini(current_hp + amount, max_hp)
 	hp_changed.emit(current_hp, max_hp)
+
+# 업그레이드 적용
+func apply_upgrade(upgrade_id: String) -> void:
+	match upgrade_id:
+		"speed":
+			speed *= 1.20
+		"max_hp":
+			max_hp += 25
+			heal(25)
+		"damage":
+			var w: Node = get_node_or_null("Weapon")
+			if w:
+				w.damage *= 1.30
+		"fire_rate":
+			var w: Node = get_node_or_null("Weapon")
+			if w:
+				var ft: Timer = w.get_node_or_null("FireTimer")
+				if ft:
+					ft.wait_time = maxf(0.15, ft.wait_time * 0.75)
+		"pierce":
+			var w: Node = get_node_or_null("Weapon")
+			if w and w.has_method("add_pierce"):
+				w.add_pierce(1)
+		"hp_regen":
+			heal(15)
 
 func _on_inv_timeout() -> void:
 	invincible = false

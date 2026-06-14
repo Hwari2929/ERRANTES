@@ -6,9 +6,10 @@ signal wave_changed(wave: int)
 
 @export var enemy_scene: PackedScene
 @export var fast_enemy_scene: PackedScene
+@export var tank_enemy_scene: PackedScene
 @export var spawn_margin: float = 180.0
 @export var base_interval: float = 1.6
-@export var min_interval: float = 0.25
+@export var min_interval: float = 0.22
 
 @onready var spawn_timer: Timer = $SpawnTimer
 
@@ -16,6 +17,9 @@ var current_wave: int = 1
 var kill_count: int = 0
 var survival_time: float = 0.0
 var _active: bool = false
+
+func _ready() -> void:
+	spawn_timer.timeout.connect(_do_spawn)
 
 func _process(delta: float) -> void:
 	if not _active:
@@ -37,25 +41,22 @@ func stop_waves() -> void:
 	_active = false
 	spawn_timer.stop()
 
-func _on_SpawnTimer_timeout() -> void:
-	_do_spawn()
-
-# Godot 4: Timer.timeout 연결은 _ready에서
-func _ready() -> void:
-	spawn_timer.timeout.connect(_do_spawn)
-
 func _do_spawn() -> void:
 	if not enemy_scene:
 		return
-	var count: int = mini(1 + current_wave / 2, 5)
+	var count: int = mini(1 + current_wave / 2, 6)
 	for i in count:
 		_spawn_one()
 
 func _spawn_one() -> void:
-	# 웨이브 3 이후 10% 확률로 빠른 적 스폰
+	var roll: float = randf()
 	var scene: PackedScene = enemy_scene
-	if fast_enemy_scene and current_wave >= 3 and randf() < 0.15:
+	# 웨이브 3+: 15% 빠른 적
+	if fast_enemy_scene and current_wave >= 3 and roll < 0.15:
 		scene = fast_enemy_scene
+	# 웨이브 5+: 8% 탱커
+	elif tank_enemy_scene and current_wave >= 5 and roll < 0.23:
+		scene = tank_enemy_scene
 
 	var e: Node2D = scene.instantiate()
 	get_parent().add_child(e)
@@ -71,14 +72,13 @@ func _on_enemy_dead(_enemy: Node) -> void:
 		player.add_xp(8 + current_wave * 2)
 
 func _edge_pos() -> Vector2:
-	# 플레이어 기준 화면 밖 랜덤 위치
-	var cam: Camera2D = get_tree().get_first_node_in_group("main_camera")
-	var center: Vector2 = Vector2(640, 360)
+	var cam: Camera2D = get_tree().get_first_node_in_group("main_camera") as Camera2D
+	var center: Vector2 = Vector2(640.0, 360.0)
 	if cam:
 		center = cam.global_position
 	var m: float = spawn_margin
 	match randi() % 4:
-		0: return center + Vector2(randf_range(-500, 500), -m - randf_range(0, 100))
-		1: return center + Vector2(m + randf_range(0, 100), randf_range(-400, 400))
-		2: return center + Vector2(randf_range(-500, 500), m + randf_range(0, 100))
-		_: return center + Vector2(-m - randf_range(0, 100), randf_range(-400, 400))
+		0: return center + Vector2(randf_range(-500.0, 500.0), -m - randf_range(0.0, 80.0))
+		1: return center + Vector2(m + randf_range(0.0, 80.0), randf_range(-380.0, 380.0))
+		2: return center + Vector2(randf_range(-500.0, 500.0), m + randf_range(0.0, 80.0))
+		_: return center + Vector2(-m - randf_range(0.0, 80.0), randf_range(-380.0, 380.0))
