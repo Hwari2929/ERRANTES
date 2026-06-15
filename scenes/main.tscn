@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://wave_manager.tscn" id="3_wave"]
-[ext_resource type="PackedScene" path="res://ui.tscn" id="4_ui"]
-[ext_resource type="Script" path="res://background.gd" id="5_bg"]
-[ext_resource type="PackedScene" path="res://upgrade_menu.tscn" id="6_um"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/wave_manager.tscn" id="3_wave"]
+[ext_resource type="PackedScene" path="res://scenes/ui.tscn" id="4_ui"]
+[ext_resource type="Script" path="res://scripts/background.gd" id="5_bg"]
+[ext_resource type="PackedScene" path="res://scenes/upgrade_menu.tscn" id="6_um"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")

@@ -38,7 +38,7 @@ func take_damage(amount: float) -> void:
 	current_health -= amount
 	health_bar.value = current_health
 	# 데미지 숫자 팝업
-	var dn_scene: PackedScene = load("res://damage_number.tscn")
+	var dn_scene: PackedScene = load("res://scenes/damage_number.tscn")
 	if dn_scene:
 		var dn: Node = dn_scene.instantiate()
 		dn.get_script().call("spawn", get_parent(), global_position, amount) if false else _spawn_dmg(amount)

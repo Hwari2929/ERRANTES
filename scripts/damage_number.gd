@@ -12,7 +12,7 @@ func _ready() -> void:
 	tw.chain().tween_callback(queue_free)
 
 static func spawn(parent: Node, pos: Vector2, amount: float) -> void:
-	var lbl := preload("res://damage_number.tscn").instantiate()
+	var lbl := preload("res://scenes/damage_number.tscn").instantiate()
 	lbl.text = str(int(amount))
 	lbl.position = pos + Vector2(randf_range(-12, 12), -24)
 	parent.add_child(lbl)

@@ -1,24 +1,24 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://enemy_tank.gd" id="1_et"]
+[ext_resource type="Script" path="res://scripts/enemy_fast.gd" id="1_ef"]
 
 [sub_resource type="RectangleShape2D" id="Rect_1"]
-size = Vector2(28, 28)
+size = Vector2(20, 20)
 
-[node name="EnemyTank" type="CharacterBody2D"]
+[node name="EnemyFast" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 5
-script = ExtResource("1_et")
+script = ExtResource("1_ef")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.6, 0.2, 1.0, 1.0)
+modulate = Color(1.0, 0.55, 0.1, 1.0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("Rect_1")
 
 [node name="HealthBar" type="ProgressBar" parent="."]
-offset_top = -22.0
-offset_right = 32.0
-offset_bottom = -12.0
+offset_top = -18.0
+offset_right = 24.0
+offset_bottom = -10.0
 show_percentage = false
 value = 100.0

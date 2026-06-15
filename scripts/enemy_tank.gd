@@ -1,4 +1,4 @@
-extends "res://enemy.gd"
+extends "res://scripts/enemy.gd"
 # 느리고 체력 많은 탱커
 
 func _ready() -> void:

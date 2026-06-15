@@ -32,11 +32,11 @@ func _ready() -> void:
 	# 씬 주입
 	var weapon: Node = player.get_node_or_null("Weapon")
 	if weapon:
-		weapon.projectile_scene = load("res://projectile.tscn")
+		weapon.projectile_scene = load("res://scenes/projectile.tscn")
 
-	wave_manager.enemy_scene = load("res://enemy.tscn")
-	wave_manager.fast_enemy_scene = load("res://enemy_fast.tscn")
-	wave_manager.tank_enemy_scene = load("res://enemy_tank.tscn")
+	wave_manager.enemy_scene = load("res://scenes/enemy.tscn")
+	wave_manager.fast_enemy_scene = load("res://scenes/enemy_fast.tscn")
+	wave_manager.tank_enemy_scene = load("res://scenes/enemy_tank.tscn")
 
 	camera.add_to_group("main_camera")
 	wave_manager.start_waves()

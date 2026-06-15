@@ -1,4 +1,4 @@
-extends "res://enemy.gd"
+extends "res://scripts/enemy.gd"
 # 빠르고 약한 적 — enemy.gd 상속, 스탯만 변경
 
 func _ready() -> void:
