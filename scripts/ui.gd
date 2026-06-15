@@ -23,11 +23,31 @@ var _best_kills: int = 0
 func _ready() -> void:
 	game_over_panel.visible = false
 	levelup_label.visible = false
+	_style_bar(hp_bar, Color(0.16, 0.85, 0.36), Color(0.5, 0.08, 0.08))   # HP: 초록 / 어두운 적색 배경
+	_style_bar(xp_bar, Color(1.0, 0.82, 0.22), Color(0.18, 0.14, 0.05))   # XP: 금색 / 어두운 배경
 	_load_best()
+
+func _style_bar(bar: ProgressBar, fill: Color, bg: Color) -> void:
+	var bg_box := StyleBoxFlat.new()
+	bg_box.bg_color = bg
+	bg_box.set_corner_radius_all(3)
+	bg_box.border_color = Color(0, 0, 0, 0.6)
+	bg_box.set_border_width_all(1)
+	var fill_box := StyleBoxFlat.new()
+	fill_box.bg_color = fill
+	fill_box.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("background", bg_box)
+	bar.add_theme_stylebox_override("fill", fill_box)
 
 func update_hp(current: int, maximum: int) -> void:
 	hp_bar.max_value = maximum
 	hp_bar.value = current
+	# 체력 낮으면 빨강 경고색으로 전환
+	var ratio: float = float(current) / maxf(1.0, float(maximum))
+	var fill: Color = Color(0.16, 0.85, 0.36) if ratio > 0.3 else Color(0.9, 0.25, 0.2)
+	var fb := hp_bar.get_theme_stylebox("fill") as StyleBoxFlat
+	if fb:
+		fb.bg_color = fill
 
 func update_xp(current: int, maximum: int) -> void:
 	xp_bar.max_value = maximum

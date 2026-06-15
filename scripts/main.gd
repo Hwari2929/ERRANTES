@@ -24,19 +24,18 @@ func _ready() -> void:
 	wave_manager.wave_changed.connect(_on_wave_changed)
 
 	# 업그레이드 메뉴
+	upgrade_menu.player = player
 	upgrade_menu.upgrade_chosen.connect(_on_upgrade_chosen)
 
 	# UI restart
 	ui.restart_pressed.connect(_on_restart)
 
-	# 씬 주입
-	var weapon: Node = player.get_node_or_null("Weapon")
-	if weapon:
-		weapon.projectile_scene = load("res://scenes/projectile.tscn")
-
+	# 적 씬 주입 (무기는 weapon_manager가 자체 로드)
 	wave_manager.enemy_scene = load("res://scenes/enemy.tscn")
 	wave_manager.fast_enemy_scene = load("res://scenes/enemy_fast.tscn")
 	wave_manager.tank_enemy_scene = load("res://scenes/enemy_tank.tscn")
+	wave_manager.shooter_enemy_scene = load("res://scenes/enemy_shooter.tscn")
+	wave_manager.splitter_enemy_scene = load("res://scenes/enemy_splitter.tscn")
 
 	camera.add_to_group("main_camera")
 	wave_manager.start_waves()

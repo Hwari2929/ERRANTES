@@ -6,6 +6,7 @@ extends Area2D
 @export var pierce: int = 1
 
 var direction: Vector2 = Vector2.RIGHT
+var is_crit: bool = false
 var _hits_left: int = 0
 
 func _ready() -> void:
@@ -20,7 +21,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("enemy"):
 		return
 	if body.has_method("take_damage"):
-		body.take_damage(damage)
+		body.take_damage(damage, is_crit)
 	_hits_left -= 1
 	if _hits_left <= 0:
 		queue_free()
