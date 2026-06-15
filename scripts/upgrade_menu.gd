@@ -16,6 +16,8 @@ const UPGRADES := [
 
 func _ready() -> void:
 	visible = false
+	# 일시정지 중에도 메뉴/버튼이 동작하도록
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
 func show_menu() -> void:
 	# 기존 버튼 제거 (Title만 남김)
@@ -32,7 +34,7 @@ func show_menu() -> void:
 		var btn := Button.new()
 		btn.text = "%s\n%s" % [up["label"], up["desc"]]
 		btn.custom_minimum_size = Vector2(360, 64)
-		btn.theme_override_font_sizes = {"font_size": 18}
+		btn.add_theme_font_size_override("font_size", 18)
 		var uid: String = up["id"]
 		btn.pressed.connect(func(): _pick(uid))
 		vbox.add_child(btn)
