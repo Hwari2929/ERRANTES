@@ -9,6 +9,10 @@ signal dead(enemy: Enemy)
 @export var damage: int = 10
 @export var xp_reward: int = 10
 
+# 스프라이트 변종: assets/sprites/{sprite_base}_{1..sprite_count}.png 중 랜덤 선택
+@export var sprite_base: String = "enemy_basic"
+@export var sprite_count: int = 3
+
 @onready var health_bar: ProgressBar = $HealthBar
 
 var current_health: float = 0.0
@@ -19,6 +23,15 @@ func _ready() -> void:
 	add_to_group("enemy")
 	health_bar.max_value = max_health
 	health_bar.value = max_health
+	_apply_random_sprite()
+
+func _apply_random_sprite() -> void:
+	if sprite_count <= 0 or not has_node("Sprite2D"):
+		return
+	var idx: int = randi_range(1, sprite_count)
+	var path: String = "res://assets/sprites/%s_%d.png" % [sprite_base, idx]
+	if ResourceLoader.exists(path):
+		$Sprite2D.texture = load(path)
 
 func _physics_process(_delta: float) -> void:
 	if _dead:

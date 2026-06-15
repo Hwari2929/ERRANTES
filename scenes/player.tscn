@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/weapon.gd" id="2_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player_1.png" id="3_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectShape_1"]
 size = Vector2(28, 28)
@@ -15,7 +16,7 @@ collision_mask = 2
 script = ExtResource("1_player")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.3, 0.8, 1.0, 1.0)
+texture = ExtResource("3_tex")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectShape_1")

@@ -6,7 +6,6 @@ func _ready() -> void:
 	speed = 45.0
 	damage = 25
 	xp_reward = 30
+	sprite_base = "enemy_tank"
+	sprite_count = 2
 	super._ready()
-	$Sprite2D.modulate = Color(0.6, 0.2, 1.0, 1.0)  # 보라색
-	# 크기 키우기
-	scale = Vector2(1.6, 1.6)

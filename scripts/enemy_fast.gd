@@ -6,5 +6,6 @@ func _ready() -> void:
 	speed = 180.0
 	damage = 5
 	xp_reward = 6
+	sprite_base = "enemy_fast"
+	sprite_count = 3
 	super._ready()
-	$Sprite2D.modulate = Color(1.0, 0.55, 0.1, 1.0)  # 주황 색상
