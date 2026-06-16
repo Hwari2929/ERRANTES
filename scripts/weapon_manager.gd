@@ -2,17 +2,21 @@ extends Node2D
 # 플레이어의 무기들을 보유/관리. 레벨업 메뉴가 무기 추가·강화를 요청한다.
 
 const WEAPON_SCRIPTS := {
-	"bolt":  "res://scripts/weapon_bolt.gd",
-	"orbit": "res://scripts/weapon_orbit.gd",
-	"whip":  "res://scripts/weapon_whip.gd",
-	"aura":  "res://scripts/weapon_aura.gd",
+	"bolt":   "res://scripts/weapon_bolt.gd",
+	"orbit":  "res://scripts/weapon_orbit.gd",
+	"whip":   "res://scripts/weapon_whip.gd",
+	"aura":   "res://scripts/weapon_aura.gd",
+	"nova":   "res://scripts/weapon_nova.gd",
+	"spread": "res://scripts/weapon_spread.gd",
 }
 
 const WEAPON_NAMES := {
-	"bolt":  "🔫 Magic Bolt",
-	"orbit": "🔵 Orbit Shards",
-	"whip":  "🌀 Slash Whip",
-	"aura":  "🔥 Burning Aura",
+	"bolt":   "🔫 Magic Bolt",
+	"orbit":  "🔵 Orbit Shards",
+	"whip":   "🌀 Slash Whip",
+	"aura":   "🔥 Burning Aura",
+	"nova":   "💥 Nova Burst",
+	"spread": "🔱 Scatter Shot",
 }
 
 var _weapons: Dictionary = {}   # id -> WeaponBase

@@ -16,10 +16,21 @@ var move_speed_mult: float = 1.0      # 이동 속도 배수
 var damage_mult: float = 1.0          # 모든 무기 데미지 배수
 var attack_speed_mult: float = 1.0    # 공격 속도 배수 (쿨다운 단축)
 var armor: int = 0                     # 받는 피해 감소 (플랫)
+var defense_pct: float = 0.0          # 받는 피해 비율 감소 (플랫 적용 후)
 var hp_regen: float = 0.0             # 초당 체력 재생
 var pickup_radius: float = 90.0       # 경험치 획득 반경
 var crit_chance: float = 0.05         # 치명타 확률
 var crit_mult: float = 2.0           # 치명타 배수
+var equipped: Array = []              # 장착한 장신구 id 목록
+
+# 장신구 카탈로그 — 장착 시 패시브 보너스 (중첩 가능)
+const ACCESSORIES := {
+	"ring_armor":  {"label": "💍 Armor Ring (+3 armor)",   "armor": 3},
+	"shield_def":  {"label": "🛡️ Aegis (+8% defense)",      "defense": 0.08},
+	"amulet_crit": {"label": "🔮 Crit Amulet (+8% crit)",   "crit": 0.08},
+	"boots_speed": {"label": "🥾 Swift Boots (+15% speed)", "speed": 0.15},
+	"tome_power":  {"label": "📕 Power Tome (+20% damage)",  "damage": 0.20},
+}
 
 @onready var inv_timer: Timer = $InvincibilityTimer
 @onready var sprite: Sprite2D = $Sprite2D
@@ -86,7 +97,9 @@ func _process(delta: float) -> void:
 func take_damage(amount: int) -> void:
 	if invincible or current_hp <= 0:
 		return
-	var dealt: int = max(1, amount - armor)
+	# 방어: 플랫(armor) 적용 후 비율(defense_pct) 감소
+	var after_armor: float = float(maxi(1, amount - armor))
+	var dealt: int = maxi(1, int(round(after_armor * (1.0 - defense_pct))))
 	current_hp = max(0, current_hp - dealt)
 	hp_changed.emit(current_hp, max_hp)
 	if current_hp <= 0:
@@ -137,13 +150,37 @@ func apply_upgrade(upgrade_id: String) -> void:
 			if weapons and weapons.has_method("refresh_cooldowns"):
 				weapons.refresh_cooldowns()
 		"armor":       armor += 2
+		"defense":     defense_pct = minf(defense_pct + 0.06, 0.8)
 		"regen":       hp_regen += 0.6
 		"crit":        crit_chance = minf(crit_chance + 0.06, 0.75)
 		"pickup":      pickup_radius += 40.0
 		"heal_now":    heal(40)
-		# 무기 추가/강화 → weapon_manager가 "weapon:<id>" 형태로 처리
+		# 무기("weapon:<id>") / 장신구("acc:<id>") 위임
 		_:
 			if upgrade_id.begins_with("weapon:") and weapons:
-				var wid: String = upgrade_id.substr(7)
-				weapons.add_or_upgrade(wid)
+				weapons.add_or_upgrade(upgrade_id.substr(7))
+			elif upgrade_id.begins_with("acc:"):
+				equip_accessory(upgrade_id.substr(4))
 	stats_changed.emit()
+
+# 장신구 장착 (보너스 적용 + 목록 기록)
+func equip_accessory(id: String) -> void:
+	var a: Dictionary = ACCESSORIES.get(id, {})
+	if a.is_empty():
+		return
+	armor += int(a.get("armor", 0))
+	defense_pct = minf(defense_pct + float(a.get("defense", 0.0)), 0.8)
+	crit_chance = minf(crit_chance + float(a.get("crit", 0.0)), 0.9)
+	move_speed_mult += float(a.get("speed", 0.0))
+	damage_mult += float(a.get("damage", 0.0))
+	equipped.append(id)
+	if weapons and weapons.has_method("refresh_cooldowns"):
+		weapons.refresh_cooldowns()
+
+# 업그레이드 메뉴에 제시할 장신구 옵션
+func accessory_options() -> Array:
+	var opts: Array = []
+	for id in ACCESSORIES:
+		opts.append({"id": "acc:" + id, "label": ACCESSORIES[id]["label"],
+					 "desc": "Equip accessory"})
+	return opts

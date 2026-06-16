@@ -13,7 +13,8 @@ const PERKS := [
 	{"id": "attack_speed", "label": "⏩ Attack Speed +18%", "desc": "Weapons fire faster"},
 	{"id": "speed",        "label": "👟 Move Speed +15%",   "desc": "Move faster"},
 	{"id": "max_hp",       "label": "❤️ Max HP +25",         "desc": "More max HP, heal 25"},
-	{"id": "armor",        "label": "🛡️ Armor +2",          "desc": "Reduce damage taken"},
+	{"id": "armor",        "label": "🛡️ Armor +2",          "desc": "Reduce damage taken (flat)"},
+	{"id": "defense",      "label": "🪖 Defense +6%",        "desc": "Reduce damage taken (%)"},
 	{"id": "regen",        "label": "💚 Regen +0.6/s",       "desc": "Recover HP over time"},
 	{"id": "crit",         "label": "🎯 Crit +6%",           "desc": "Higher crit chance"},
 	{"id": "pickup",       "label": "🧲 Pickup +40",         "desc": "Larger XP pickup range"},
@@ -31,6 +32,9 @@ func _build_pool() -> Array:
 		var wm: Node = player.get_node_or_null("WeaponManager")
 		if wm and wm.has_method("available_options"):
 			pool += wm.available_options()
+		# 장신구 옵션
+		if player.has_method("accessory_options"):
+			pool += player.accessory_options()
 	# 특성 옵션
 	pool += PERKS.duplicate()
 	return pool

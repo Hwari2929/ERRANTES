@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui.tscn" id="4_ui"]
 [ext_resource type="Script" path="res://scripts/background.gd" id="5_bg"]
 [ext_resource type="PackedScene" path="res://scenes/upgrade_menu.tscn" id="6_um"]
+[ext_resource type="PackedScene" path="res://scenes/companion.tscn" id="7_comp"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -15,6 +16,9 @@ script = ExtResource("5_bg")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(640, 360)
+
+[node name="Companion" parent="." instance=ExtResource("7_comp")]
+position = Vector2(688, 360)
 
 [node name="WaveManager" parent="." instance=ExtResource("3_wave")]
 
