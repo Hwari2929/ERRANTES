@@ -31,6 +31,14 @@ var level: int = 1
 var invincible: bool = false
 var _regen_accum: float = 0.0
 
+# ── 대시 능력 변수 ──
+var is_dashing: bool = false
+var dash_timer: float = 0.0
+var dash_cooldown_timer: float = 0.0
+const DASH_DURATION: float = 0.15
+const DASH_COOLDOWN: float = 1.2
+const DASH_SPEED_MULT: float = 3.0
+
 func _ready() -> void:
 	current_hp = max_hp
 	add_to_group("player")
@@ -41,9 +49,29 @@ func _ready() -> void:
 	if weapons and weapons.has_method("add_weapon"):
 		weapons.add_weapon("bolt")
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# 대시 쿨다운 감소
+	if dash_cooldown_timer > 0:
+		dash_cooldown_timer -= delta
+
+	# 대시 입력 및 상태 전환
+	if Input.is_action_just_pressed("ui_accept") and not is_dashing and dash_cooldown_timer <= 0:
+		is_dashing = true
+		dash_timer = DASH_DURATION
+		dash_cooldown_timer = DASH_COOLDOWN
+
+	# 대시 지속 시간 감소
+	if is_dashing:
+		dash_timer -= delta
+		if dash_timer <= 0:
+			is_dashing = false
+
+	# 이동 계산 (대시 배수 통합)
 	var dir: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	velocity = dir * base_speed * move_speed_mult
+	var current_speed_mult: float = move_speed_mult
+	if is_dashing:
+		current_speed_mult *= DASH_SPEED_MULT
+	velocity = dir * base_speed * current_speed_mult
 	move_and_slide()
 
 func _process(delta: float) -> void:
