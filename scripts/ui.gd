@@ -19,33 +19,47 @@ const SAVE_PATH := "user://best_score.dat"
 var _levelup_tween: Tween
 var _best_time: float = 0.0
 var _best_kills: int = 0
+var _prev_hp: int = 0
+var damage_vignette: ColorRect
 
 func _ready() -> void:
 	game_over_panel.visible = false
 	levelup_label.visible = false
-	_style_bar(hp_bar, Color(0.16, 0.85, 0.36), Color(0.5, 0.08, 0.08))   # HP: 초록 / 어두운 적색 배경
-	_style_bar(xp_bar, Color(1.0, 0.82, 0.22), Color(0.18, 0.14, 0.05))   # XP: 금색 / 어두운 배경
+	_style_bar(hp_bar, Color(0.16, 0.85, 0.36), Color(0.5, 0.08, 0.08))
+	_style_bar(xp_bar, Color(1.0, 0.82, 0.22), Color(0.18, 0.14, 0.05))
 	_load_best()
+	
+	# Setup damage vignette
+	damage_vignette = ColorRect.new()
+	damage_vignette.name = "DamageVignette"
+	damage_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	damage_vignette.anchors_preset = Control.PRESET_FULL_RECT
+	damage_vignette.modulate = Color(1.0, 0.0, 0.0, 0.0)
+	add_child(damage_vignette)
 
 func _style_bar(bar: ProgressBar, fill: Color, bg: Color) -> void:
-	var bg_box := StyleBoxFlat.new()
+	var bg_box: StyleBoxFlat = StyleBoxFlat.new()
 	bg_box.bg_color = bg
 	bg_box.set_corner_radius_all(3)
 	bg_box.border_color = Color(0, 0, 0, 0.6)
 	bg_box.set_border_width_all(1)
-	var fill_box := StyleBoxFlat.new()
+	var fill_box: StyleBoxFlat = StyleBoxFlat.new()
 	fill_box.bg_color = fill
 	fill_box.set_corner_radius_all(3)
 	bar.add_theme_stylebox_override("background", bg_box)
 	bar.add_theme_stylebox_override("fill", fill_box)
 
 func update_hp(current: int, maximum: int) -> void:
+	_prev_hp = int(hp_bar.value)
 	hp_bar.max_value = maximum
 	hp_bar.value = current
-	# 체력 낮으면 빨강 경고색으로 전환
+	
+	if current < _prev_hp:
+		flash_damage()
+	
 	var ratio: float = float(current) / maxf(1.0, float(maximum))
 	var fill: Color = Color(0.16, 0.85, 0.36) if ratio > 0.3 else Color(0.9, 0.25, 0.2)
-	var fb := hp_bar.get_theme_stylebox("fill") as StyleBoxFlat
+	var fb: StyleBoxFlat = hp_bar.get_theme_stylebox("fill") as StyleBoxFlat
 	if fb:
 		fb.bg_color = fill
 
@@ -92,7 +106,7 @@ func _save_best(time: float, kills: int) -> bool:
 	if is_new:
 		_best_time = time
 		_best_kills = kills
-		var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+		var f: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 		if f:
 			f.store_float(time)
 			f.store_32(kills)
@@ -102,8 +116,15 @@ func _save_best(time: float, kills: int) -> bool:
 func _load_best() -> void:
 	if not FileAccess.file_exists(SAVE_PATH):
 		return
-	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var f: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if f:
 		_best_time = f.get_float()
 		_best_kills = f.get_32()
 		f.close()
+
+func flash_damage() -> void:
+	if not damage_vignette:
+		return
+	damage_vignette.modulate.a = 0.35
+	var tween: Tween = create_tween()
+	tween.tween_property(damage_vignette, "modulate:a", 0.0, 0.4)
