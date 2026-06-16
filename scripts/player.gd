@@ -184,3 +184,7 @@ func accessory_options() -> Array:
 		opts.append({"id": "acc:" + id, "label": ACCESSORIES[id]["label"],
 					 "desc": "Equip accessory"})
 	return opts
+
+# 대시 사용 가능 여부 확인
+func dash_ready() -> bool:
+	return dash_cooldown_timer <= 0.0
